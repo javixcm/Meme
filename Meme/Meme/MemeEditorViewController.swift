@@ -8,7 +8,7 @@
 
 import UIKit
 
-class ViewController: UIViewController , UIImagePickerControllerDelegate,
+class MemeEditorViewController: UIViewController , UIImagePickerControllerDelegate,
 UINavigationControllerDelegate, UITextFieldDelegate {
 
     
@@ -17,6 +17,16 @@ UINavigationControllerDelegate, UITextFieldDelegate {
     @IBOutlet weak var topTitleMeme: UITextField!
     @IBOutlet weak var bottomTitleMeme: UITextField!
     @IBOutlet weak var camButton: UIBarButtonItem!
+    
+    
+    @IBOutlet weak var navigationBar: UINavigationBar!
+    
+    @IBOutlet weak var toolBar: UIToolbar!
+    
+    
+    
+    
+    var meme:Meme!
     
     let memeTextAttributes = [
         NSStrokeColorAttributeName : UIColor.blackColor(),
@@ -45,33 +55,70 @@ UINavigationControllerDelegate, UITextFieldDelegate {
     override func viewWillAppear(animated: Bool) {
         super.viewWillAppear(animated)
         camButton.enabled = UIImagePickerController.isSourceTypeAvailable(UIImagePickerControllerSourceType.Camera)
-        self.subscribeToKeyboardNotifications()
+        subscribeToKeyboardNotifications()
     }
     
     override func viewWillDisappear(animated: Bool) {
         super.viewWillDisappear(animated)
-        self.unsubscribeFromKeyboardNotifications()
+        unsubscribeFromKeyboardNotifications()
     }
 
     
     
     @IBAction func cleanMeme(sender: AnyObject) {
-        self.imagePickerView.image = nil
+        imagePickerView.image = nil
         topTitleMeme.text = "TOP"
         bottomTitleMeme.text = "BOTTOM"
         
-        
+        showNavTool(true)
+    }
+    
+    func showNavTool(status :Bool){
+    
+        if(status){
+            navigationBar.hidden=false
+            toolBar.hidden=false
+        }else{
+            navigationBar.hidden=true
+            toolBar.hidden=true
+        }
     }
     
     
-    @IBAction func shareMeme(sender: AnyObject) {
-        let memeImage = generateMemedImage()
-        let activityViewController = UIActivityViewController(activityItems: [memeImage], applicationActivities: nil)
-        presentViewController(activityViewController, animated: true, completion: nil)
- }
     
+    @IBAction func shareMeme(sender: AnyObject) {
+        
+       
+        
+        if (imagePickerView.image == nil) {
+            
+            let imageNotSavedAlert = UIAlertController(title: "Empty Image", message: "Select Image", preferredStyle: UIAlertControllerStyle.Alert)
+            imageNotSavedAlert.addAction(UIAlertAction(title: "Ok", style: UIAlertActionStyle.Default, handler: nil))
+            presentViewController(imageNotSavedAlert, animated: true, completion: nil)
+            
+        } else {
+            let memedImage = generateMemedImage()
+            meme = Meme(topMemeText: topTitleMeme.text!, bottomMemeText: bottomTitleMeme.text!, originalImage: imagePickerView.image!, memedImage: memedImage)
+            let shareActivityView = UIActivityViewController(activityItems:[meme.memedImage!], applicationActivities: nil)
+            shareActivityView.completionWithItemsHandler = { (activity: String?, success: Bool, items: [AnyObject]?, error: NSError?) in
+                
+                dispatch_async(dispatch_get_main_queue()) {
+                    
+                    if (success) {
+                       
+                        self.unsubscribeFromKeyboardNotifications()
+                        self.navigationController?.popViewControllerAnimated(true)
+                    }
+                }
+            }
+            presentViewController(shareActivityView, animated: true, completion: nil)
+            
+        }
+    }
     
     func generateMemedImage() -> UIImage {
+        showNavTool(false)
+        
         let defaultBackGroundColor = imagePickerView.backgroundColor
         imagePickerView.backgroundColor = UIColor.whiteColor()
         
@@ -84,43 +131,51 @@ UINavigationControllerDelegate, UITextFieldDelegate {
         
         imagePickerView.backgroundColor = defaultBackGroundColor
         
+        showNavTool(true)
+        
         return memedImage
     }
     
-    
-    
-    
     @IBAction func pickAnImage(sender: AnyObject) {
-        
-        let imagePickerController = UIImagePickerController()
-        imagePickerController.delegate = self
-        imagePickerController.sourceType = UIImagePickerControllerSourceType.Camera
-        self.presentViewController(imagePickerController, animated: true, completion: nil)
-
-        
+        pickImageGeneric("cam")
     }
     
   
     @IBAction func pickImageFromAlbum(sender: AnyObject) {
+        pickImageGeneric("album")
+    }
+    
+    
+    func pickImageGeneric(type :String){
+
         let imagePickerController = UIImagePickerController()
-        imagePickerController.delegate = self
-        imagePickerController.sourceType = UIImagePickerControllerSourceType.PhotoLibrary
-        self.presentViewController(imagePickerController, animated: true, completion: nil)
         
+        if(type=="album"){
+            imagePickerController.delegate = self
+            imagePickerController.sourceType = UIImagePickerControllerSourceType.PhotoLibrary
+            presentViewController(imagePickerController, animated: true, completion: nil)
+            
         
+        }else{
+            imagePickerController.delegate = self
+            imagePickerController.sourceType = UIImagePickerControllerSourceType.Camera
+            presentViewController(imagePickerController, animated: true, completion: nil)
+        }
     }
     
     
     func imagePickerController(picker: UIImagePickerController, didFinishPickingMediaWithInfo info: [String : AnyObject]) {
         if let image = info[UIImagePickerControllerOriginalImage] as? UIImage {
             imagePickerView.image = image
-            self.dismissViewControllerAnimated(true, completion: nil)
+            dismissViewControllerAnimated(true, completion: nil)
+            
         }
     }
     
     
     func imagePickerControllerDidCancel(picker: UIImagePickerController) {
-        self.dismissViewControllerAnimated(true, completion: nil)
+        dismissViewControllerAnimated(true, completion: nil)
+        showNavTool(true)
         
     }
     
@@ -131,13 +186,8 @@ UINavigationControllerDelegate, UITextFieldDelegate {
     }
     
     func textFieldShouldReturn(textField: UITextField) -> Bool {
-        //textField.resignFirstResponder()
-        
-        //return true
-        
-        self.view.endEditing(true)
+        view.endEditing(true)
         return false
-        
     }
     
     func textField(textField: UITextField, shouldChangeCharactersInRange range: NSRange, replacementString string: String) -> Bool {
@@ -158,13 +208,13 @@ UINavigationControllerDelegate, UITextFieldDelegate {
     
     func keyboardWillShow(notification: NSNotification) {
         if bottomTitleMeme.isFirstResponder() {
-            self.view.frame.origin.y -= getKeyboardHeight(notification)
+            view.frame.origin.y -= getKeyboardHeight(notification)
         }
     }
     
     func keyboardWillHide(notification: NSNotification) {
         if bottomTitleMeme.isFirstResponder() {
-            self.view.frame.origin.y += getKeyboardHeight(notification)
+            view.frame.origin.y += getKeyboardHeight(notification)
         }
     }
     

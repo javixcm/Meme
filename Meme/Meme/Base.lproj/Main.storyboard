@@ -6,10 +6,10 @@
         <capability name="Constraints to layout margins" minToolsVersion="6.0"/>
     </dependencies>
     <scenes>
-        <!--View Controller-->
+        <!--Meme Editor View Controller-->
         <scene sceneID="tne-QT-ifu">
             <objects>
-                <viewController id="BYZ-38-t0r" customClass="ViewController" customModule="Meme" customModuleProvider="target" sceneMemberID="viewController">
+                <viewController id="BYZ-38-t0r" customClass="MemeEditorViewController" customModule="Meme" customModuleProvider="target" sceneMemberID="viewController">
                     <layoutGuides>
                         <viewControllerLayoutGuide type="top" id="y3c-jy-aDJ"/>
                         <viewControllerLayoutGuide type="bottom" id="wfy-db-euE"/>
@@ -58,13 +58,13 @@
                             </navigationBar>
                             <textField opaque="NO" clipsSubviews="YES" contentMode="scaleToFill" misplaced="YES" contentHorizontalAlignment="center" contentVerticalAlignment="center" text="TOP" textAlignment="center" minimumFontSize="17" translatesAutoresizingMaskIntoConstraints="NO" id="clt-3G-ftA">
                                 <rect key="frame" x="0.0" y="78" width="600" height="30"/>
-                                <color key="textColor" cocoaTouchSystemColor="tableCellGroupedBackgroundColor"/>
+                                <color key="textColor" red="1" green="1" blue="1" alpha="1" colorSpace="calibratedRGB"/>
                                 <fontDescription key="fontDescription" style="UICTFontTextStyleTitle1"/>
                                 <textInputTraits key="textInputTraits" autocapitalizationType="allCharacters"/>
                             </textField>
                             <textField opaque="NO" clipsSubviews="YES" contentMode="scaleToFill" misplaced="YES" contentHorizontalAlignment="left" contentVerticalAlignment="center" text="BOTTOM" textAlignment="center" minimumFontSize="17" translatesAutoresizingMaskIntoConstraints="NO" id="haf-J4-VZI">
                                 <rect key="frame" x="0.0" y="499" width="600" height="30"/>
-                                <color key="textColor" cocoaTouchSystemColor="tableCellGroupedBackgroundColor"/>
+                                <color key="textColor" red="1" green="1" blue="1" alpha="1" colorSpace="calibratedRGB"/>
                                 <fontDescription key="fontDescription" style="UICTFontTextStyleTitle1"/>
                                 <textInputTraits key="textInputTraits"/>
                             </textField>
@@ -94,12 +94,14 @@
                         <outlet property="bottomTitleMeme" destination="haf-J4-VZI" id="Nbt-I2-Jpq"/>
                         <outlet property="camButton" destination="gt5-fy-cOn" id="v29-QH-TJo"/>
                         <outlet property="imagePickerView" destination="VZm-vC-fYH" id="zyP-r2-jbY"/>
+                        <outlet property="navigationBar" destination="hBQ-q9-dBE" id="8P2-mA-zaV"/>
+                        <outlet property="toolBar" destination="8c7-TP-1Mi" id="0L6-je-RSh"/>
                         <outlet property="topTitleMeme" destination="clt-3G-ftA" id="D4Q-Yt-VaC"/>
                     </connections>
                 </viewController>
                 <placeholder placeholderIdentifier="IBFirstResponder" id="dkx-z0-nzr" sceneMemberID="firstResponder"/>
             </objects>
-            <point key="canvasLocation" x="757" y="647"/>
+            <point key="canvasLocation" x="678" y="586"/>
         </scene>
     </scenes>
 </document>
