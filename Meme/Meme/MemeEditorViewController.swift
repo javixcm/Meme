@@ -98,7 +98,7 @@ UINavigationControllerDelegate, UITextFieldDelegate {
             
         } else {
             let memedImage = generateMemedImage()
-            meme = Meme(topMemeText: topTitleMeme.text!, bottomMemeText: bottomTitleMeme.text!, originalImage: imagePickerView.image!, memedImage: memedImage)
+            meme = Meme(topText: topTitleMeme.text!, bottomText: bottomTitleMeme.text!, originalImage: imagePickerView.image!, memedImage: memedImage)
             let shareActivityView = UIActivityViewController(activityItems:[meme.memedImage!], applicationActivities: nil)
             shareActivityView.completionWithItemsHandler = { (activity: String?, success: Bool, items: [AnyObject]?, error: NSError?) in
                 

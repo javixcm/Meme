@@ -10,15 +10,10 @@ import Foundation
 import UIKit
 
 struct Meme {
-    var topText : String
-    var bottomText : String
+    var topText : String = "TOP"
+    var bottomText : String = "BOTTOM"
     var originalImage : UIImage?
     var memedImage : UIImage?
 
-    init(topMemeText: String, bottomMemeText:String, originalImage: UIImage, memedImage : UIImage){
-        topText = topMemeText
-        bottomText = bottomMemeText
-        self.originalImage = originalImage
-        self.memedImage = memedImage
-    }
+  
 }
